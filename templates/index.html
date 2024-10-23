@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ruta más corta con la API Google Maps</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-image: url('nature.jpg'); /* URL de tu imagen de fondo */
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      color: black;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    select, input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      border: none;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    select:hover, input[type="submit"]:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    input[type="submit"] {
+      background-color: #28a745;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #218838;
+    }
+
+    #map {
+      height: 500px;
+      width: 80%;
+      max-width: 800px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #distancia {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ruta más corta con la API de "Google Maps"</h1>
+  <form onsubmit="return getRoute();">
+    <label for="origin">Ciudad de origen:</label>
+    <select id="origin">
+      <option value="">Selecciona una ciudad</option>
+      <option value="Aguascalientes">Aguascalientes</option>
+      <option value="BajaCalifornia">Baja California</option>
+      <option value="BajaCaliforniaSur">Baja California Sur</option>
+      <option value="Campeche">Campeche</option>
+      <option value="Chiapas">Chiapas</option>
+      <option value="Chihuahua">Chihuahua</option>
+      <option value="CDMX">CDMX</option>
+      <option value="Coahuila">Coahuila</option>
+      <option value="Colima">Colima</option>
+      <option value="Durango">Durango</option>
+      <option value="Guanajuato">Guanajuato</option>
+      <option value="Guerrero">Guerrero</option>
+      <option value="Hidalgo">Hidalgo</option>
+      <option value="Jalisco">Jalisco</option>
+      <option value="Mexico">Estado de México</option>
+      <option value="Michoacan">Michoacán</option>
+      <option value="Morelos">Morelos</option>
+      <option value="Nayarit">Nayarit</option>
+      <option value="NuevoLeon">Nuevo León</option>
+      <option value="Oaxaca">Oaxaca</option>
+      <option value="Puebla">Puebla</option>
+      <option value="Queretaro">Querétaro</option>
+      <option value="QuintanaRoo">Quintana Roo</option>
+      <option value="SanLuisPotosi">San Luis Potosí</option>
+      <option value="Sinaloa">Sinaloa</option>
+      <option value="Sonora">Sonora</option>
+      <option value="Tabasco">Tabasco</option>
+      <option value="Tamaulipas">Tamaulipas</option>
+      <option value="Tlaxcala">Tlaxcala</option>
+      <option value="Veracruz">Veracruz</option>
+      <option value="Yucatan">Yucatán</option>
+      <option value="Zacatecas">Zacatecas</option>
+    </select>
+    <label for="destination">Ciudad de destino:</label>
+    <select id="destination">
+      <option value="">Selecciona una ciudad</option>
+      <option value="Aguascalientes">Aguascalientes</option>
+      <option value="BajaCalifornia">Baja California</option>
+      <option value="BajaCaliforniaSur">Baja California Sur</option>
+      <option value="Campeche">Campeche</option>
+      <option value="Chiapas">Chiapas</option>
+      <option value="Chihuahua">Chihuahua</option>
+      <option value="CDMX">CDMX</option>
+      <option value="Coahuila">Coahuila</option>
+      <option value="Colima">Colima</option>
+      <option value="Durango">Durango</option>
+      <option value="Guanajuato">Guanajuato</option>
+      <option value="Guerrero">Guerrero</option>
+      <option value="Hidalgo">Hidalgo</option>
+      <option value="Jalisco">Jalisco</option>
+      <option value="Mexico">Estado de México</option>
+      <option value="Michoacan">Michoacán</option>
+      <option value="Morelos">Morelos</option>
+      <option value="Nayarit">Nayarit</option>
+      <option value="NuevoLeon">Nuevo León</option>
+      <option value="Oaxaca">Oaxaca</option>
+      <option value="Puebla">Puebla</option>
+      <option value="Queretaro">Querétaro</option>
+      <option value="QuintanaRoo">Quintana Roo</option>
+      <option value="SanLuisPotosi">San Luis Potosí</option>
+      <option value="Sinaloa">Sinaloa</option>
+      <option value="Sonora">Sonora</option>
+      <option value="Tabasco">Tabasco</option>
+      <option value="Tamaulipas">Tamaulipas</option>
+      <option value="Tlaxcala">Tlaxcala</option>
+      <option value="Veracruz">Veracruz</option>
+      <option value="Yucatan">Yucatán</option>
+      <option value="Zacatecas">Zacatecas</option>
+    </select>
+    <input type="submit" value="Buscar ruta">
+  </form>
+  <div id="map"></div>
+  <div id="distancia"></div>
+  <script>
+    let map;
+    let directionsService;
+    let directionsRenderer;
+    
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5,
+          center: {lat: 23.6345, lng: -102.5528}  // Coordenadas centrales de México
+      });
+  
+  
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+    }
+    
+    function getRoute() {
+      const cities = {
+        'Aguascalientes': { lat: 21.87641043660486, lng: -102.26438663286967 },
+        'BajaCalifornia': { lat: 32.5027, lng: -117.00371 },
+        'BajaCaliforniaSur': { lat: 24.14437, lng: -110.3005 },
+        'Campeche': { lat: 19.8301, lng: -90.53491 },
+        'Chiapas': { lat: 16.75, lng: -93.1167 },
+        'Chihuahua': { lat: 28.6353, lng: -106.0889 },
+        'CDMX': { lat: 19.432713075976878, lng: -99.13318344772986 },
+        'Coahuila': { lat: 25.4260, lng: -101.0053 },
+        'Colima': { lat: 19.2452, lng: -103.725 },
+        'Durango': { lat: 24.0277,  lng: -104.6532 },
+        'Guanajuato': { lat: 21.0190, lng: -101.2574 },
+        'Guerrero': { lat: 17.5506, lng: -99.5024 },
+        'Hidalgo': { lat: 20.1011, lng: -98.7624 },
+        'Jalisco': { lat: 20.6597, lng: -103.3496 },
+        'Mexico': { lat: 19.4969, lng: -99.7233 },
+        'Michoacan': { lat: 19.5665, lng: -101.7068 },
+        'Morelos': { lat: 18.6813, lng: -99.1013 },
+        'Nayarit': { lat: 21.7514, lng: -104.8455 },
+        'NuevoLeon': { lat: 25.6866, lng: -100.3161 },
+        'Oaxaca': { lat: 17.0732, lng: -96.7266 },
+        'Puebla': { lat: 19.0413, lng: -98.2062 },
+        'Queretaro': { lat: 20.5888, lng: -100.3899 },
+        'QuintanaRoo': { lat: 19.1817, lng: -88.4791 },
+        'SanLuisPotosi': { lat: 22.1565, lng: -100.9855 },
+        'Sinaloa': { lat: 24.8045, lng: -107.4937 },
+        'Sonora': { lat: 29.0729, lng: -110.9559 },
+        'Tabasco': { lat: 17.8409, lng: -92.6189 },
+        'Tamaulipas': { lat: 23.7417, lng: -99.1455 },
+        'Tlaxcala': { lat: 19.3139, lng: -98.2406 },
+        'Veracruz': { lat: 19.1738, lng: -96.1342 },
+        'Yucatan': { lat: 20.7099, lng: -89.0943 },
+        'Zacatecas': { lat: 22.7709, lng: -102.5832 }
+      };
+
+      const origin = document.getElementById("origin").value;
+      const destination = document.getElementById("destination").value;
+
+      if (!origin || !destination) {
+        alert("Por favor selecciona tanto una ciudad de origen como una ciudad de destino.");
+        return false;
+      }
+
+      const request = {
+        origin: cities[origin],
+        destination: cities[destination],
+        travelMode: "DRIVING",
+        unitSystem: google.maps.UnitSystem.METRIC
+      };
+
+      directionsService.route(request, function(result, status) {
+        if (status == "OK") {
+          directionsRenderer.setDirections(result);
+          computeTotalDistance(result);
+        } else {
+          alert("No se pudo obtener la ruta: " + status);
+        }
+      });
+
+      return false;
+    }
+
+    function computeTotalDistance(result) {
+      let total = 0;
+      const myroute = result.routes[0];
+      for (let i = 0; i < myroute.legs.length; i++) {
+        total += myroute.legs[i].distance.value;
+      }
+      total = total / 1000;
+      document.getElementById("distancia").innerHTML = "Distancia total: " + total + " km";
+    }
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6Awk0xLC74TQPgU_CHgZuKd1-Vyg6Cj8"></script>
+    
+</body>
+</html>
+
